@@ -17,3 +17,14 @@ document.addEventListener("submit", (e) => {
       email: form.email.value,
       password: form.password.value,
     }),
+  }).then((response) => {
+    if (response.status !== 200) {
+      alert("Email ou mot de passe erronés");
+    } else {
+      response.json().then((data) => {
+        sessionStorage.setItem("token", data.token); //STORE TOKEN
+        window.location.replace("index.html");
+      });
+    }
+  });
+});
