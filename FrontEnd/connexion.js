@@ -28,9 +28,3 @@ document.addEventListener("submit", (e) => {
     }
   });
 });
-document.getElementById("logBtn").addEventListener("click", () => {
-  // Effacer le token de session
-  sessionStorage.removeItem("token");
-  // Rediriger vers la page de connexion
-  window.location.replace("index.html");
-});
