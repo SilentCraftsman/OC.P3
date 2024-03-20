@@ -123,7 +123,7 @@ function toggleProjects(datasetCategory) {
 //********ADMIN MODE******//
 
 function adminUserMode() {
-  //display admin mode if token is found and has the expected length (optional chaining)
+  //display admin mode if token is found and has the expected length
   if (sessionStorage.getItem("token")?.length == 143) {
     //Hide filter
     document.querySelector(".filter").style.display = "none";
@@ -149,36 +149,19 @@ function adminUserMode() {
   }
 }
 
-// Fonction pour supprimer le mode admin
-function removeAdminUserMode() {
-  // Afficher à nouveau le filtre
-  document.querySelector(".filter").style.display = "block";
-  // Changer le texte du bouton de connexion en "login"
-  document.getElementById("logBtn").innerText = "login";
-  // Supprimer la barre de menu supérieure
+// Code pour la déconnexion
+document.getElementById("logBtn").addEventListener("click", () => {
+  // Effacer le token de session
+  sessionStorage.removeItem("token");
+  // Supprimer les éléments du mode admin directement
   const topMenu = document.querySelector(".topMenu");
   if (topMenu) {
     topMenu.remove();
   }
-  // Supprimer le bouton de modification
   const editBtn = document.querySelector(".editBtn");
   if (editBtn) {
     editBtn.remove();
   }
-  // Retirer l'écouteur d'événement pour ouvrir le modal
-  document
-    .querySelector("#portfolio p")
-    .removeEventListener("click", openModal);
-}
-
-// Code pour la déconnexion
-document.getElementById("logoutButton").addEventListener("click", () => {
-  // Effacer le token de session
-  sessionStorage.removeItem("token");
-  // Supprimer le mode admin
-  removeAdminUserMode();
-  // Rediriger vers la page de connexion
-  window.location.replace("index.html");
 });
 
 //*********MODAL*******//
