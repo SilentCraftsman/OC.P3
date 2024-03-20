@@ -48,3 +48,42 @@ function displayGallery(data) {
     workCard.append(workImage, workTitle);
   });
 }
+
+/*Filtre*/
+function listOfUniqueCategories() {
+  let listOfCategories = new Set();
+  //get set of string categories
+  worksData.forEach((work) => {
+    listOfCategories.add(JSON.stringify(work.category));
+  });
+  //push stringified categories in array
+  const arrayOfStrings = [...listOfCategories];
+  //parse array to get objects back
+  categories = arrayOfStrings.map((s) => JSON.parse(s));
+}
+
+//init filter buttons
+function categoryFilter(categories, filter) {
+  const button = document.createElement("button");
+  button.innerText = "Tous";
+  button.className = "filterButton";
+  button.dataset.category = "Tous";
+  filter.appendChild(button);
+  filterButtons(categories, filter);
+  functionFilter();
+}
+
+//create filter buttons
+function filterButtons(categories, filter) {
+  categories.forEach((categorie) => {
+    createButtonFilter(categorie, filter);
+  });
+}
+
+function createButtonFilter(categorie, filter) {
+  const button = document.createElement("button");
+  button.innerText = categorie.name;
+  button.className = "filterButton";
+  button.dataset.category = categorie.name;
+  filter.appendChild(button);
+}
