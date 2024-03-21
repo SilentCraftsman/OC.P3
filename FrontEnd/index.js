@@ -146,6 +146,8 @@ function adminUserMode() {
       .insertAdjacentHTML("afterend", editBtn);
     //event listener modal
     document.querySelector("#portfolio p").addEventListener("click", openModal);
+    const divModif = document.querySelector(".topMenu p");
+    divModif.addEventListener("click", openModal);
   }
 }
 
@@ -242,7 +244,6 @@ function deleteWork(i) {
     //if response is positive, update the works gallery accordingly
     if (response.ok) {
       alert("Projet supprimé avec succés");
-      console.log("ok, le projet est supprimé");
       //delete work from worksData array
       worksData = worksData.filter((work) => work.id != i);
       //display updated galleries
@@ -395,7 +396,6 @@ function sendNewData(token, formData, title, categoryName) {
     .then((response) => {
       if (response.ok) {
         alert("Nouveau fichier envoyé avec succés : " + title);
-        console.log("ok, le projet est passé");
         return response.json();
       } else {
         console.error("Erreur:", response.status);
