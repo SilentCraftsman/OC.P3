@@ -216,6 +216,7 @@ function modalGallery(data) {
     workImage.src = i.imageUrl;
     workImage.alt = i.title;
     miniWork.className = "miniWork";
+    miniWork.id = "vignette" + i.id;
     //references to DOM
     modalContent.appendChild(miniWork);
     miniWork.append(workImage, trashCan);
@@ -243,12 +244,12 @@ function deleteWork(i) {
   }).then((response) => {
     //if response is positive, update the works gallery accordingly
     if (response.ok) {
-      alert("Projet supprimé avec succés");
+      //alert("Projet supprimé avec succés");
       //delete work from worksData array
       worksData = worksData.filter((work) => work.id != i);
       //display updated galleries
       displayGallery(worksData);
-      modalGallery(worksData);
+      document.getElementById("vignette" + i).remove(); //modalGallery(worksData);
       //if response is negative report an error
     } else {
       alert("Erreur : " + response.status);
@@ -289,7 +290,34 @@ const openNewWorkForm = function (e) {
 //preview picture in form
 const picturePreview = function () {
   const [file] = pictureInput.files;
+  const errorMessage = document.querySelector("#errMess");
+  if (errorMessage) {
+    errorMessage.style.display = "none"; // Masquer le message d'erreur par défaut
+  }
   if (file) {
+    if (file.size > 4000000) {
+      // Vérifier si la taille du fichier dépasse 4 millions d'octets
+      if (!errorMessage) {
+        const errorMessage = document.createElement("div");
+        errorMessage.id = "errMess";
+        errorMessage.textContent = "La taille de l'image dépasse 4 Mo !";
+        errorMessage.style.color = "red";
+        errorMessage.style.margin = "0 auto";
+        document
+          .querySelector("#labelPhoto")
+          .parentNode.insertBefore(
+            errorMessage,
+            document.querySelector("#labelPhoto").nextSibling
+          );
+      } else {
+        errorMessage.style.display = "block"; // Afficher le message d'erreur
+      }
+      return; // Arrêter l'exécution de la fonction si la taille dépasse la limite
+    } else {
+      if (errorMessage) {
+        errorMessage.style.display = "none"; // Masquer le message d'erreur si la taille est inférieure à 4 Mo
+      }
+    }
     document.querySelector("#picturePreviewImg").src =
       URL.createObjectURL(file);
     document.querySelector("#picturePreview").style.display = "flex";
