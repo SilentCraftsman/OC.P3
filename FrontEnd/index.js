@@ -291,33 +291,71 @@ const openNewWorkForm = function (e) {
 const picturePreview = function () {
   const [file] = pictureInput.files;
   const errorMessage = document.querySelector("#errMess");
-  if (errorMessage) {
-    errorMessage.style.display = "none"; // Masquer le message d'erreur par défaut
-  }
+  const submitButton = document.querySelector("#valider");
+  const submitErrorDiv = document.querySelector("#submitError");
+
   if (file) {
+    // Supprimer le message d'erreur existant s'il y en a un
+    if (errorMessage) {
+      errorMessage.remove();
+    }
+
     if (file.size > 4000000) {
+      // Réinitialiser la valeur de l'élément d'entrée du fichier pour vider la mémoire cache de l'image précédente
+      pictureInput.value = "";
       // Vérifier si la taille du fichier dépasse 4 millions d'octets
-      if (!errorMessage) {
-        const errorMessage = document.createElement("div");
-        errorMessage.id = "errMess";
-        errorMessage.textContent = "La taille de l'image dépasse 4 Mo !";
-        errorMessage.style.color = "red";
-        errorMessage.style.margin = "0 auto";
-        document
-          .querySelector("#labelPhoto")
-          .parentNode.insertBefore(
-            errorMessage,
-            document.querySelector("#labelPhoto").nextSibling
-          );
-      } else {
-        errorMessage.style.display = "block"; // Afficher le message d'erreur
+      const newErrorMessage = document.createElement("div");
+      newErrorMessage.id = "errMess";
+      newErrorMessage.textContent = "La taille de l'image dépasse 4 Mo !";
+      newErrorMessage.style.color = "red";
+      newErrorMessage.style.margin = "0 auto";
+      document
+        .querySelector("#labelPhoto")
+        .parentNode.insertBefore(
+          newErrorMessage,
+          document.querySelector("#labelPhoto").nextSibling
+        );
+
+      // Masquer le message d'erreur après 2 secondes
+      setTimeout(() => {
+        newErrorMessage.style.display = "none";
+      }, 2000);
+
+      // Désactiver le bouton de validation du formulaire
+      submitButton.disabled = true;
+
+      // Afficher un message d'erreur au-dessus du bouton de validation
+      if (!submitErrorDiv) {
+        const newSubmitErrorDiv = document.createElement("div");
+        newSubmitErrorDiv.id = "submitError";
+        newSubmitErrorDiv.textContent =
+          "Impossible de valider le formulaire. Taille de l'image trop grande.";
+        newSubmitErrorDiv.style.color = "red";
+        newSubmitErrorDiv.style.marginTop = "10px";
+        submitButton.parentNode.insertBefore(newSubmitErrorDiv, submitButton);
+
+        // Masquer le message d'erreur après 5 secondes
+        setTimeout(() => {
+          newSubmitErrorDiv.style.display = "none";
+        }, 5000);
       }
+
       return; // Arrêter l'exécution de la fonction si la taille dépasse la limite
     } else {
+      // Masquer le message d'erreur s'il existe
       if (errorMessage) {
-        errorMessage.style.display = "none"; // Masquer le message d'erreur si la taille est inférieure à 4 Mo
+        errorMessage.style.display = "none";
+      }
+
+      // Activer le bouton de validation du formulaire
+      submitButton.disabled = false;
+
+      // Supprimer le message d'erreur au-dessus du bouton de validation s'il existe
+      if (submitErrorDiv) {
+        submitErrorDiv.remove();
       }
     }
+
     document.querySelector("#picturePreviewImg").src =
       URL.createObjectURL(file);
     document.querySelector("#picturePreview").style.display = "flex";
