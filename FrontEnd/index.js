@@ -234,28 +234,35 @@ const deleteBtn = function (e) {
 
 //API call for DELETE route
 function deleteWork(i) {
-  //authentify user and send API response
+  // Authentifier l'utilisateur et envoyer la réponse API
   let token = sessionStorage.getItem("token");
   fetch(baseApiUrl + "works/" + i, {
     method: "DELETE",
     headers: {
       authorization: `Bearer ${token}`,
     },
-  }).then((response) => {
-    //if response is positive, update the works gallery accordingly
-    if (response.ok) {
-      //alert("Projet supprimé avec succés");
-      //delete work from worksData array
-      worksData = worksData.filter((work) => work.id != i);
-      //display updated galleries
-      displayGallery(worksData);
-      document.getElementById("vignette" + i).remove(); //modalGallery(worksData);
-      //if response is negative report an error
-    } else {
-      alert("Erreur : " + response.status);
-      closeModal;
-    }
-  });
+  })
+    .then((response) => {
+      // Si la réponse est positive, mettre à jour la galerie d'œuvres
+      if (response.ok) {
+        // Supprimer l'œuvre du tableau worksData
+        worksData = worksData.filter((work) => work.id != i);
+        // Afficher les galeries mises à jour
+        displayGallery(worksData);
+        // Supprimer l'élément correspondant dans la fenêtre modale
+        const vignette = document.getElementById("vignette" + i);
+        if (vignette) {
+          vignette.remove();
+        }
+        // Si la réponse est négative, signaler une erreur
+      } else {
+        alert("Erreur : " + response.status);
+        closeModal(); // Assurez-vous que c'est bien closeModal() pour appeler la fonction
+      }
+    })
+    .catch((error) => {
+      console.error("Erreur :", error);
+    });
 }
 
 //*************ADD WORK***************/
