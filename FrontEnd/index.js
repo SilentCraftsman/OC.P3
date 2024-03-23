@@ -30,21 +30,30 @@ window.onload = () => {
 
 //*******GALLERY*******
 
+// Créer la galerie
 function displayGallery(data) {
   gallery = document.querySelector(".gallery");
   gallery.innerHTML = "";
-  //show all works in array
+
+  let idCounter = 1; // Initialisation du compteur d'ID
+
   data.forEach((i) => {
-    //create tags
+    // Créer les éléments de la galerie avec des ID uniques
     const workCard = document.createElement("figure");
     const workImage = document.createElement("img");
     const workTitle = document.createElement("figcaption");
+
+    // Attribution de l'ID unique à chaque élément
+    const imageId = `Image${idCounter++}`;
+    workCard.id = imageId;
+
     workImage.src = i.imageUrl;
     workImage.alt = i.title;
     workTitle.innerText = i.title;
     workCard.dataset.category = i.category.name;
     workCard.className = "workCard";
-    //references to DOM
+
+    // Ajouter les éléments à la galerie
     gallery.appendChild(workCard);
     workCard.append(workImage, workTitle);
   });
@@ -247,14 +256,20 @@ function deleteWork(i) {
       if (response.ok) {
         // Supprimer l'œuvre du tableau worksData
         worksData = worksData.filter((work) => work.id != i);
+        // Supprimer l'élément correspondant dans la galerie principale
+        const galleryItem = document.getElementById("Image" + i);
+        console.log("Gallery Item:", galleryItem); // Afficher galleryItem dans la console
+        if (galleryItem) {
+          galleryItem.remove();
+        }
         // Afficher les galeries mises à jour
-        displayGallery(worksData);
+        // displayGallery(worksData); // Ne pas mettre à jour toute la galerie ici
         // Supprimer l'élément correspondant dans la fenêtre modale
         const vignette = document.getElementById("vignette" + i);
+        console.log("Vignette:", vignette); // Afficher vignette dans la console
         if (vignette) {
           vignette.remove();
         }
-        // Si la réponse est négative, signaler une erreur
       } else {
         alert("Erreur : " + response.status);
         closeModal(); // Assurez-vous que c'est bien closeModal() pour appeler la fonction
