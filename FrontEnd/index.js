@@ -35,22 +35,23 @@ function displayGallery(data) {
   gallery = document.querySelector(".gallery");
   gallery.innerHTML = "";
 
-  let idCounter = 1; // Initialisation du compteur d'ID
-
-  data.forEach((i) => {
+  data.forEach((work, index) => {
     // Créer les éléments de la galerie avec des ID uniques
     const workCard = document.createElement("figure");
     const workImage = document.createElement("img");
     const workTitle = document.createElement("figcaption");
 
     // Attribution de l'ID unique à chaque élément
-    const imageId = `Image${idCounter++}`;
+    const imageId = `Image${index + 1}`;
     workCard.id = imageId;
 
-    workImage.src = i.imageUrl;
-    workImage.alt = i.title;
-    workTitle.innerText = i.title;
-    workCard.dataset.category = i.category.name;
+    // Attribution de l'attribut data-id
+    workCard.dataset.id = work.id;
+
+    workImage.src = work.imageUrl;
+    workImage.alt = work.title;
+    workTitle.innerText = work.title;
+    workCard.dataset.category = work.category.name;
     workCard.className = "workCard";
 
     // Ajouter les éléments à la galerie
@@ -214,19 +215,22 @@ function modalGallery(data) {
   const modalContent = document.querySelector(".modalContent");
   modalContent.innerHTML = "";
   //show all works in array
-  data.forEach((i) => {
+  data.forEach((work) => {
     //create elements
     const miniWork = document.createElement("figure");
     const workImage = document.createElement("img");
     const trashCan = document.createElement("i");
     //trashcan ID is work ID
-    trashCan.id = i.id;
+    trashCan.id = work.id;
     trashCan.classList.add("fa-solid", "fa-trash-can");
-    workImage.src = i.imageUrl;
-    workImage.alt = i.title;
+    workImage.src = work.imageUrl;
+    workImage.alt = work.title;
+
+    // Attribution de l'attribut data-id
+    miniWork.dataset.id = work.id;
+
     miniWork.className = "miniWork";
-    miniWork.id = "vignette" + i.id;
-    //references to DOM
+    // Ajouter les éléments à la modale
     modalContent.appendChild(miniWork);
     miniWork.append(workImage, trashCan);
   });
@@ -256,19 +260,21 @@ function deleteWork(i) {
       if (response.ok) {
         // Supprimer l'œuvre du tableau worksData
         worksData = worksData.filter((work) => work.id != i);
+
         // Supprimer l'élément correspondant dans la galerie principale
-        const galleryItem = document.getElementById("Image" + i);
-        console.log("Gallery Item:", galleryItem); // Afficher galleryItem dans la console
+        const galleryItem = document.querySelector(`.workCard[data-id="${i}"]`);
+        console.log(galleryItem);
         if (galleryItem) {
           galleryItem.remove();
+          console.log("supprimé gallery !");
         }
-        // Afficher les galeries mises à jour
-        // displayGallery(worksData); // Ne pas mettre à jour toute la galerie ici
+
         // Supprimer l'élément correspondant dans la fenêtre modale
-        const vignette = document.getElementById("vignette" + i);
-        console.log("Vignette:", vignette); // Afficher vignette dans la console
+        const vignette = document.querySelector(`.miniWork[data-id="${i}"]`);
+        console.log(vignette);
         if (vignette) {
           vignette.remove();
+          console.log("supprimé vignette !");
         }
       } else {
         alert("Erreur : " + response.status);
